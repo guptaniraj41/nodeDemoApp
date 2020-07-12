@@ -24,14 +24,29 @@ var server = http.createServer(function(request, respone) {
   });
   request.on('end', function() {
     payload += decoder.end();
-    // code to send response to user
-    respone.end('Hello world..!!\n');
-    // logging request related information
-    console.log('Request received on path: ' + trimmedPath +
-      ' with request type as: ' + requestType +
-      ' having query string parameters: ', queryStringObject,
-      ' with headers : ', headers,
-      ' with payload', payload);
+    // code to choose handler where to send request
+    var chossedHandler = typeof(router[trimmedPath]) !== 'undefined' ? router[trimmedPath] : handlers.notFound;
+    // construct data object to send to the handler
+    var data = {
+      'trimmedPath': trimmedPath,
+      'queryStringObject': queryStringObject,
+      'method': requestType,
+      'headers': headers,
+      'payload': payload
+    }
+    // route the request to handler
+    chossedHandler(data, function(statusCode, reponsePayload) {
+      // set status code if any otherwise set default status code
+      statusCode = typeof(statusCode) === 'number' ? statusCode : 500;
+      // set reponsePayload if any otherwise set to empty object
+      reponsePayload = typeof(reponsePayload) === 'object' ? reponsePayload : {};
+      var payloadString = JSON.stringify(reponsePayload);
+      // code to send response to user
+      respone.writeHead(statusCode);
+      respone.end(payloadString);
+      // logging request related information
+      console.log('Returning response: ', payloadString);
+    });
   });
 });
 
@@ -39,3 +54,19 @@ var server = http.createServer(function(request, respone) {
 server.listen(3000, function() {
   console.log("Server is listening on port 3000");
 });
+
+// code to create handler to map user request
+var handlers = {};
+
+handlers.testHandler = function(data, callback) {
+  callback(200, {"name": data.trimmedPath + " called."})
+};
+
+handlers.notFound = function(data, callback) {
+  callback(404);
+};
+
+// code to create a router to route user request
+var router = {
+  "test": handlers.testHandler
+}
