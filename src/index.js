@@ -3,7 +3,7 @@ const url = require('url');
 const stringDecoder = require('string_decoder').StringDecoder;
 
 // Create server
-var server = http.createServer(function(request, respone) {
+var server = http.createServer(function(request, response) {
   // code to get the url requested by user
   var parsedUrl = url.parse(request.url, true);
   // code to extract the query string as object from url
@@ -41,9 +41,12 @@ var server = http.createServer(function(request, respone) {
       // set reponsePayload if any otherwise set to empty object
       reponsePayload = typeof(reponsePayload) === 'object' ? reponsePayload : {};
       var payloadString = JSON.stringify(reponsePayload);
-      // code to send response to user
-      respone.writeHead(statusCode);
-      respone.end(payloadString);
+      // code to set response header
+      response.setHeader('Content-Type', 'application/json');
+      // code to set status code
+      response.writeHead(statusCode);
+      // code to send response data or payload
+      response.end(payloadString);
       // logging request related information
       console.log('Returning response: ', payloadString);
     });
