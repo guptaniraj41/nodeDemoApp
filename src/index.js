@@ -13,12 +13,15 @@ var server = http.createServer(function(request, respone) {
   var path = parsedUrl.pathname;
   // code to replace the leading and trailing slash from path
   var trimmedPath = path.replace(/^\/+|\/+$/g, '');
+  // code to get the headers from the request
+  var headers = request.headers;
   // code to send response to user
   respone.end('Hello world..!!\n');
   // logging request related information
   console.log('Request received on path: ' + trimmedPath +
     ' with request type as: ' + requestType +
-    ' having query string parameters: ', queryStringObject);
+    ' having query string parameters: ', queryStringObject,
+    ' and headers are: ', headers);
 });
 
 // Server listening on port 3000
