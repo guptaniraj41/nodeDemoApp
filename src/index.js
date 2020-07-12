@@ -3,12 +3,22 @@ const url = require('url');
 
 // Create server
 var server = http.createServer(function(request, respone) {
+  // code to get the url requested by user
   var parsedUrl = url.parse(request.url, true);
+  // code to extract the query string as object from url
+  var queryStringObject = parsedUrl.query;
+  // code to identify the http request type [GET, PUT, POST, DELETE] etc.
   var requestType = request.method;
+  // code to extract the path from the url
   var path = parsedUrl.pathname;
+  // code to replace the leading and trailing slash from path
   var trimmedPath = path.replace(/^\/+|\/+$/g, '');
+  // code to send response to user
   respone.end('Hello world..!!\n');
-  console.log('Request received on path: ' + trimmedPath + ' with request type as: ' + requestType);
+  // logging request related information
+  console.log('Request received on path: ' + trimmedPath +
+    ' with request type as: ' + requestType +
+    ' having query string parameters: ', queryStringObject);
 });
 
 // Server listening on port 3000
