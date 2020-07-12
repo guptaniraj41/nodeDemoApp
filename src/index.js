@@ -1,5 +1,6 @@
 const http = require('http');
 const url = require('url');
+const stringDecoder = require('string_decoder').StringDecoder;
 
 // Create server
 var server = http.createServer(function(request, respone) {
@@ -15,13 +16,23 @@ var server = http.createServer(function(request, respone) {
   var trimmedPath = path.replace(/^\/+|\/+$/g, '');
   // code to get the headers from the request
   var headers = request.headers;
-  // code to send response to user
-  respone.end('Hello world..!!\n');
-  // logging request related information
-  console.log('Request received on path: ' + trimmedPath +
-    ' with request type as: ' + requestType +
-    ' having query string parameters: ', queryStringObject,
-    ' and headers are: ', headers);
+  // code to get the payload
+  var decoder = new stringDecoder('utf-8');
+  var payload = '';
+  request.on('data', function(data) {
+    payload += decoder.write(data);
+  });
+  request.on('end', function() {
+    payload += decoder.end();
+    // code to send response to user
+    respone.end('Hello world..!!\n');
+    // logging request related information
+    console.log('Request received on path: ' + trimmedPath +
+      ' with request type as: ' + requestType +
+      ' having query string parameters: ', queryStringObject,
+      ' with headers : ', headers,
+      ' with payload', payload);
+  });
 });
 
 // Server listening on port 3000
