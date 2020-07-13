@@ -84,8 +84,8 @@ var unifiedServer = function(request, response) {
 // code to create handler to map user request
 var handlers = {};
 
-handlers.testHandler = function(data, callback) {
-  callback(200, {"name": data.trimmedPath + " called."})
+handlers.ping = function(data, callback) {
+  callback(200);
 };
 
 handlers.notFound = function(data, callback) {
@@ -94,5 +94,5 @@ handlers.notFound = function(data, callback) {
 
 // code to create a router to route user request
 var router = {
-  "test": handlers.testHandler
+  "ping": handlers.ping
 }
