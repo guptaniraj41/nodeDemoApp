@@ -1,10 +1,37 @@
 const http = require('http');
+const https = require('https');
 const url = require('url');
 const stringDecoder = require('string_decoder').StringDecoder;
 const environment = require('./config');
+const fs = require('fs');
 
-// Create server
-var server = http.createServer(function(request, response) {
+// Instantiate HTTP server
+var httpServer = http.createServer(function(request, response) {
+  unifiedServer(request, response);
+});
+
+// Start HTTP server
+httpServer.listen(environment.httpPort, function() {
+  console.log("HTTP Server is listening on port " + environment.httpPort);
+});
+
+// Instantiate HTTPS Server
+var httpsServerOptions = {
+  "key": fs.readFileSync('../https/key.pem'),
+  "cert": fs.readFileSync('../https/cert.pem')
+};
+
+var httpsServer = https.createServer(httpsServerOptions, function(request, response) {
+  unifiedServer(request, response);
+});
+
+// Start HTTPS Server
+httpsServer.listen(environment.httpsPort, function() {
+  console.log("HTTPS Server is listening on port " + environment.httpsPort);
+});
+
+// common code for both HTTP and HTTPS Server
+var unifiedServer = function(request, response) {
   // code to get the url requested by user
   var parsedUrl = url.parse(request.url, true);
   // code to extract the query string as object from url
@@ -52,13 +79,7 @@ var server = http.createServer(function(request, response) {
       console.log('Returning response: ', payloadString);
     });
   });
-});
-
-// code to listen to server
-server.listen(environment.port, function() {
-  console.log("Server is listening on port " + environment.port + " and mode is :"
-    + environment.environmentName);
-});
+};
 
 // code to create handler to map user request
 var handlers = {};
