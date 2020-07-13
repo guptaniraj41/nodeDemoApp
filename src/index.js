@@ -1,9 +1,10 @@
 const http = require('http');
 const url = require('url');
 const stringDecoder = require('string_decoder').StringDecoder;
+const environment = require('./config');
 
 // Create server
-var server = http.createServer(function(request, respone) {
+var server = http.createServer(function(request, response) {
   // code to get the url requested by user
   var parsedUrl = url.parse(request.url, true);
   // code to extract the query string as object from url
@@ -41,18 +42,22 @@ var server = http.createServer(function(request, respone) {
       // set reponsePayload if any otherwise set to empty object
       reponsePayload = typeof(reponsePayload) === 'object' ? reponsePayload : {};
       var payloadString = JSON.stringify(reponsePayload);
-      // code to send response to user
-      respone.writeHead(statusCode);
-      respone.end(payloadString);
+      // code to set response header
+      response.setHeader('Content-Type', 'application/json');
+      // code to set status code
+      response.writeHead(statusCode);
+      // code to send response data or payload
+      response.end(payloadString);
       // logging request related information
       console.log('Returning response: ', payloadString);
     });
   });
 });
 
-// Server listening on port 3000
-server.listen(3000, function() {
-  console.log("Server is listening on port 3000");
+// code to listen to server
+server.listen(environment.port, function() {
+  console.log("Server is listening on port " + environment.port + " and mode is :"
+    + environment.environmentName);
 });
 
 // code to create handler to map user request
