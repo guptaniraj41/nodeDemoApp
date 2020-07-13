@@ -17,8 +17,8 @@ httpServer.listen(environment.httpPort, function() {
 
 // Instantiate HTTPS Server
 var httpsServerOptions = {
-  "key": fs.readFileSync('../https/key.pem'),
-  "cert": fs.readFileSync('../https/cert.pem')
+  "key": fs.readFileSync('/home/niraj/nodeDemoApp/src/app/https/key.pem'),
+  "cert": fs.readFileSync('/home/niraj/nodeDemoApp/src/app/https/cert.pem')
 };
 
 var httpsServer = https.createServer(httpsServerOptions, function(request, response) {
