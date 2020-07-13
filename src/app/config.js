@@ -2,19 +2,16 @@
 var environments = {};
 
 environments.local = {
-  'port': 3000,
+  'httpPort': 3000,
+  'httpsPort': 3001,
   'environmentName': 'localhost'
 };
 
 environments.production = {
-  'port': 5000,
+  'httpPort': 5000,
+  'httpsPort': 5001,
   'environmentName': 'production'
 };
-
-environments.test = {
-  'port': 4000,
-  'environmentName': 'testing'
-}
 
 // code to check environment if selected otherwise default to local
 var choosenEnvironment = typeof(process.env.NODE_ENV) !== 'undefined' ? process.env.NODE_ENV : 'local';
