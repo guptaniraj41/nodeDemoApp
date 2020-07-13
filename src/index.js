@@ -1,6 +1,7 @@
 const http = require('http');
 const url = require('url');
 const stringDecoder = require('string_decoder').StringDecoder;
+const environment = require('./config');
 
 // Create server
 var server = http.createServer(function(request, response) {
@@ -53,9 +54,10 @@ var server = http.createServer(function(request, response) {
   });
 });
 
-// Server listening on port 3000
-server.listen(3000, function() {
-  console.log("Server is listening on port 3000");
+// code to listen to server
+server.listen(environment.port, function() {
+  console.log("Server is listening on port " + environment.port + " and mode is :"
+    + environment.environmentName);
 });
 
 // code to create handler to map user request
